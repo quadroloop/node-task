@@ -36,7 +36,7 @@
 <script>
 var tcount = 0;
 var scount;
-var nname , nage;
+var nname, nage;
 
  var config = {
  	headers: {
@@ -64,7 +64,7 @@ var nname , nage;
     if(response.status == 200) {
     	swal({timer: 1500,showConfimButton:false,title: "Success",text:"Added people successfully",type: 'success'});
     	// remove textbox values
-    	document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>1</td><td class="'+tcount+'">'+name+'</td><td class="'+tcount+'">'+age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id);"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson();"><i class="fa fa-trash"></i> Delete</a></td></tr>';
+    	document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>1</td><td class="'+tcount+'">'+name+'</td><td class="'+tcount+'">'+age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id);"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson(this.title);" title="'+tcount+'"><i class="fa fa-trash"></i> Delete</a></td></tr>';
     	document.getElementById('name').value = "";
  	    document.getElementById('age').value = "";
       scount = tcount;
@@ -90,27 +90,26 @@ function updatePerson(td) {
   // second sequence updating..
   edit_btn.onclick = function() {
 
-  var cell = document.getElementsByClassName(td);
-  table_items[0].innerText = nname;
-  table_items[1].innerText = nage;
-
-
     //make an HTTP put request
     axios({
      method: 'put',
      url: '/updatePerson',
      data: {
-     "name":nname,
-     "age": nage
+     "name": document.getElementsByName(td)[0].value,
+     "age":  document.getElementsByName(td)[1].value
   }
-});
 
+});
+for(var i=0;i < table_items.length;i++){
+  var x = document.getElementsByName(td)[0].value;
+  table_items[i].innerHTML = x;
+}
      edit_btn.innerHTML='<i class="fa fa-pencil"></i> Edit'
     edit_btn.onclick = function(){updatePerson(td);}
   }
 }
 
-function deletePerson() {
+function deletePerson(td) {
  swal({
   title: 'Are you sure?',
   text: "do you really want to delete this person?",
@@ -121,13 +120,15 @@ function deletePerson() {
   confirmButtonText: 'Yes, delete it!'
 }).then((result) => {
   if (result.value) {
+    // get data form row..
+      var table_items = document.getElementsByClassName(td);
     //perform delete request
     axios({
      method: 'delete',
      url: '/deletePerson',
      data: {
-     "name":"Bryce",
-     "age":"Mercines"
+     "name": document.getElementsByClassName(td)[0].innerHTML,
+     "age": document.getElementsByClassName(td)[1].innerHTML
   }
 });
     swal('Deleted!','you have remove a person from the table.','success')
