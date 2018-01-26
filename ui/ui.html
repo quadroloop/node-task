@@ -64,7 +64,7 @@ var nname, nage;
     if(response.status == 200) {
     	swal({timer: 1500,showConfimButton:false,title: "Success",text:"Added people successfully",type: 'success'});
     	// remove textbox values
-    	document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>1</td><td class="'+tcount+'">'+name+'</td><td class="'+tcount+'">'+age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id);"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson(this.title);" title="'+tcount+'"><i class="fa fa-trash"></i> Delete</a></td></tr>';
+    	document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>'+tcount+'</td><td class="'+tcount+'">'+name+'</td><td class="'+tcount+'">'+age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id);"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson(this.title);" title="'+tcount+'"><i class="fa fa-trash"></i> Delete</a></td></tr>';
     	document.getElementById('name').value = "";
  	    document.getElementById('age').value = "";
       scount = tcount;
@@ -89,7 +89,6 @@ function updatePerson(td) {
   edit_btn.innerHTML = '<i class="fa fa-calendar"></i> Update';
   // second sequence updating..
   edit_btn.onclick = function() {
-
     //make an HTTP put request
     axios({
      method: 'put',
@@ -100,10 +99,14 @@ function updatePerson(td) {
   }
 
 });
+
+ location.reload();
+/*
 for(var i=0;i < table_items.length;i++){
   var x = document.getElementsByName(td)[0].value;
   table_items[i].innerHTML = x;
 }
+*/
      edit_btn.innerHTML='<i class="fa fa-pencil"></i> Edit'
     edit_btn.onclick = function(){updatePerson(td);}
   }
