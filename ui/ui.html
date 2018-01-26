@@ -34,7 +34,7 @@
 
 
 <script>
-var tcount = 0;
+var tcount = 1;
 var scount;
 var nname, nage;
 
@@ -43,6 +43,21 @@ var nname, nage;
  		'Content-Type': 'application/json'
  	}
  }
+
+// get people
+window.onload = function() {
+  axios({
+     method: 'get',
+     url: '/getPeople'
+}).then(function (response) {
+    var peopleData = response.data;
+    for(var i=0; i < peopleData.length; i++) {
+      document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>'+peopleData[i].id+'</td><td class="'+tcount+'">'+peopleData[i].name+'</td><td class="'+tcount+'">'+peopleData[i].age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id,this.title);" title="'+peopleData[i].id+'"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson(this.title);" title="'+tcount+'"><i class="fa fa-trash"></i> Delete</a></td></tr>';
+      tcount++;
+    }
+  });
+}
+
  function addPeople() {
  	var name = document.getElementById('name').value;
  	var age = document.getElementById('age').value;
@@ -63,13 +78,7 @@ var nname, nage;
   .then(function (response) {
     if(response.status == 200) {
     	swal({timer: 1500,showConfimButton:false,title: "Success",text:"Added people successfully",type: 'success'});
-    	// remove textbox values
-    	document.getElementById('thread').innerHTML += '<tr class="w3-animate-opacity"><td>'+tcount+'</td><td class="'+tcount+'">'+name+'</td><td class="'+tcount+'">'+age+'</td><td><a class="w3-btn w3-indigo w3-small w3-round" id="'+tcount+'" onclick="updatePerson(this.id);"><i class="fa fa-pencil"></i> Edit</a> <a class="w3-btn w3-red w3-small w3-round" onclick="deletePerson(this.title);" title="'+tcount+'"><i class="fa fa-trash"></i> Delete</a></td></tr>';
-    	document.getElementById('name').value = "";
- 	    document.getElementById('age').value = "";
-      scount = tcount;
-      tcount++;
-
+  location.reload();
 
     }
   })
@@ -79,11 +88,15 @@ var nname, nage;
 }
 }
 
-function updatePerson(td) {
+
+
+
+
+function updatePerson(td,item) {
   var table_items = document.getElementsByClassName(td);
   for(var i=0;i < table_items.length;i++){
   	var x = table_items[i].innerText;
-  	table_items[i].innerHTML = '<input type="text" value="'+x+'" name="'+scount+'" title="'+scount+'" onkeyup="catchValue(this.value,this.title);">';
+  	table_items[i].innerHTML = '<input type="text" value="'+x+'" class="dataholder" title="'+scount+'" onkeyup="catchValue(this.value,this.title);">';
   }
   var edit_btn = document.getElementById(td);
   edit_btn.innerHTML = '<i class="fa fa-calendar"></i> Update';
@@ -94,8 +107,9 @@ function updatePerson(td) {
      method: 'put',
      url: '/updatePerson',
      data: {
-     "name": document.getElementsByName(td)[0].value,
-     "age":  document.getElementsByName(td)[1].value
+    "id": item,
+     "name": document.getElementsByClassName("dataholder")[0].value,
+     "age":  document.getElementsByClassName("dataholder")[1].value
   }
 
 });
